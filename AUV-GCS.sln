@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27428.1
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AUV-GCS", "AUV-GCS.csproj", "{6E0F3590-D064-4D6B-AEB4-04F639CDE4E8}"
 EndProject
@@ -33,6 +33,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MissionPlanner.Utilities", "ExtLibs\Utilities\MissionPlanner.Utilities.csproj", "{8CC16BE0-34A4-4683-8D8E-F8F52E19BD7D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZedGraph", "ExtLibs\ZedGraph\ZedGraph.csproj", "{2541686B-1673-43BF-AF89-3163945DB009}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PathProgram", "ExtLibs\PathProgram\PathProgram.csproj", "{1A34A984-73A8-4919-BB04-36D8207FD436}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -224,6 +226,18 @@ Global
 		{2541686B-1673-43BF-AF89-3163945DB009}.Release|x64.Build.0 = Release|Any CPU
 		{2541686B-1673-43BF-AF89-3163945DB009}.Release|x86.ActiveCfg = Release|Any CPU
 		{2541686B-1673-43BF-AF89-3163945DB009}.Release|x86.Build.0 = Release|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Debug|x64.Build.0 = Debug|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Debug|x86.Build.0 = Debug|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Release|x64.ActiveCfg = Release|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Release|x64.Build.0 = Release|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Release|x86.ActiveCfg = Release|Any CPU
+		{1A34A984-73A8-4919-BB04-36D8207FD436}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -243,6 +257,7 @@ Global
 		{CF402948-A3F4-4962-8A57-E40B46759D25} = {F23AD991-B2E9-432F-88A5-57593A3F2DED}
 		{8CC16BE0-34A4-4683-8D8E-F8F52E19BD7D} = {F23AD991-B2E9-432F-88A5-57593A3F2DED}
 		{2541686B-1673-43BF-AF89-3163945DB009} = {F23AD991-B2E9-432F-88A5-57593A3F2DED}
+		{1A34A984-73A8-4919-BB04-36D8207FD436} = {F23AD991-B2E9-432F-88A5-57593A3F2DED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A2BF157-2FF1-42DE-814D-DB7FDC30D416}
