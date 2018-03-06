@@ -48,8 +48,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Comms\MissionPlanner.Comms.csproj">
-      <Project>{825e7a10-390c-4a2b-b3a8-491d14966912}</Project>
+      <Project>{1495759a-9158-4f22-b75f-ee291c57d935}</Project>
       <Name>MissionPlanner.Comms</Name>
     </ProjectReference>
   </ItemGroup>
