@@ -76,7 +76,7 @@
       <HintPath>packages\DirectShowLib.1.0.0\lib\DirectShowLib.dll</HintPath>
     </Reference>
     <Reference Include="DirectShowLib-2005">
-      <HintPath>..\..\MavLink\Mavlinkform\Mavlinkform\Extlibs\DirectShowLib-2005.dll</HintPath>
+      <HintPath>Extlibs\DirectShowLib-2005.dll</HintPath>
     </Reference>
     <Reference Include="Flurl, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Flurl.2.3.0\lib\netstandard1.4\Flurl.dll</HintPath>
@@ -88,13 +88,13 @@
       <HintPath>packages\Unofficial.ObjectListView.2.6.0\lib\net20\ObjectListView.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK">
-      <HintPath>..\..\MavLink\Mavlinkform\Mavlinkform\Extlibs\OpenTK.dll</HintPath>
+      <HintPath>Extlibs\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK.Compatibility">
-      <HintPath>..\..\MavLink\Mavlinkform\Mavlinkform\Extlibs\OpenTK.Compatibility.dll</HintPath>
+      <HintPath>Extlibs\OpenTK.Compatibility.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK.GLControl">
-      <HintPath>..\..\MavLink\Mavlinkform\Mavlinkform\Extlibs\OpenTK.GLControl.dll</HintPath>
+      <HintPath>Extlibs\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -425,6 +425,10 @@
       <Project>{bfbea668-811b-4a2c-88c8-4ace809240ea}</Project>
       <Name>MAVLink</Name>
     </ProjectReference>
+    <ProjectReference Include="ExtLibs\PathProgram\PathProgram.csproj">
+      <Project>{1a34a984-73a8-4919-bb04-36d8207fd436}</Project>
+      <Name>PathProgram</Name>
+    </ProjectReference>
     <ProjectReference Include="ExtLibs\px4uploader\px4uploader.csproj">
       <Project>{664fc484-2a94-4b0d-808f-a71f88e06b11}</Project>
       <Name>px4uploader</Name>
@@ -446,7 +450,6 @@
       <Name>ZedGraph</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\01_01.png" />
     <Content Include="Resources\01_03.png" />
