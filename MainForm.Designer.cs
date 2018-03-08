@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 namespace AUV_GCS
 {
     partial class MainForm
@@ -80,7 +80,7 @@ namespace AUV_GCS
         #endregion
 
         public System.Windows.Forms.MenuStrip MainMenu;
-        private System.Windows.Forms.ToolStripButton conect_button;
+        public System.Windows.Forms.ToolStripButton conect_button;
         private MissionPlanner.Controls.ToolStripConnectionControl toolStripConnectionControl;
     }
 }
