@@ -1,4 +1,5 @@
-﻿namespace AUV_GCS
+﻿using System;
+namespace AUV_GCS
 {
     partial class MainForm
     {
@@ -28,43 +29,49 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+            this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.conect_button = new System.Windows.Forms.ToolStripButton();
-            this.toolStrip1.SuspendLayout();
+            this.toolStripConnectionControl = new MissionPlanner.Controls.ToolStripConnectionControl();
+            this.MainMenu.SuspendLayout();
             this.SuspendLayout();
             // 
-            // toolStrip1
+            // MainMenu
             // 
-            this.toolStrip1.BackgroundImage = global::AUV_GCS.Properties.Resources.bgdark;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.conect_button});
-            this.toolStrip1.Location = new System.Drawing.Point(0, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(800, 68);
-            this.toolStrip1.TabIndex = 0;
-            this.toolStrip1.Text = "toolStrip1";
+            this.MainMenu.BackgroundImage = global::AUV_GCS.Properties.Resources.bgdark;
+            this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.conect_button,
+            this.toolStripConnectionControl});
+            resources.ApplyResources(this.MainMenu, "MainMenu");
+            this.MainMenu.Name = "MainMenu";
+            this.MainMenu.Stretch = false;
             // 
             // conect_button
             // 
+            this.conect_button.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.conect_button.ForeColor = System.Drawing.Color.White;
             this.conect_button.Image = global::AUV_GCS.Properties.Resources.light_connect_icon;
-            this.conect_button.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.conect_button.ImageTransparentColor = System.Drawing.Color.Magenta;
+            resources.ApplyResources(this.conect_button, "conect_button");
             this.conect_button.Name = "conect_button";
-            this.conect_button.Size = new System.Drawing.Size(66, 65);
-            this.conect_button.Text = "Connect";
-            this.conect_button.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.conect_button.Click += new System.EventHandler(this.conect_button_Click);
+            // 
+            // toolStripConnectionControl
+            // 
+            this.toolStripConnectionControl.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripConnectionControl.BackgroundImage = global::AUV_GCS.Properties.Resources.bgdark;
+            this.toolStripConnectionControl.Margin = new System.Windows.Forms.Padding(0);
+            this.toolStripConnectionControl.Name = "toolStripConnectionControl";
+            resources.ApplyResources(this.toolStripConnectionControl, "toolStripConnectionControl");
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.toolStrip1);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            resources.ApplyResources(this, "$this");
+            this.Controls.Add(this.MainMenu);
+            this.MainMenuStrip = this.MainMenu;
             this.Name = "MainForm";
-            this.Text = "MainForm";
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this.MainMenu.ResumeLayout(false);
+            this.MainMenu.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -72,7 +79,8 @@
 
         #endregion
 
-        private System.Windows.Forms.ToolStrip toolStrip1;
+        public System.Windows.Forms.MenuStrip MainMenu;
         private System.Windows.Forms.ToolStripButton conect_button;
+        private MissionPlanner.Controls.ToolStripConnectionControl toolStripConnectionControl;
     }
 }

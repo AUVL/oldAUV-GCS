@@ -53,7 +53,16 @@ namespace AUV_GCS
         public MainForm()
         {
             InitializeComponent();
+            _connectionControl = toolStripConnectionControl.ConnectionControl;
+            _connectionControl.CMB_baudrate.TextChanged += this.CMB_baudrate_TextChanged;
+            _connectionControl.CMB_serialport.SelectedIndexChanged += this.CMB_serialport_SelectedIndexChanged;
+            _connectionControl.CMB_serialport.Click += this.CMB_serialport_Click;
+            _connectionControl.cmb_sysid.Click += cmb_sysid_Click;
+
+            _connectionControl.ShowLinkStats += (sender, e) => ShowConnectionStatsForm();
+            switchicons(new burntkermitmenuicons());
         }
+
         public static MAVLinkInterface comPort
         {
             get
@@ -445,6 +454,91 @@ namespace AUV_GCS
                 return;
             }
         }
+        public void doDisconnect(MAVLinkInterface comPort)
+        {
+            log.Info("We are disconnecting");
+            try
+            {
+                if (speechEngine != null) // cancel all pending speech
+                    speechEngine.SpeakAsyncCancelAll();
+
+                comPort.BaseStream.DtrEnable = false;
+                comPort.Close();
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+
+            // now that we have closed the connection, cancel the connection stats
+            // so that the 'time connected' etc does not grow, but the user can still
+            // look at the now frozen stats on the still open form
+            try
+            {
+                // if terminal is used, then closed using this button.... exception
+                if (this.connectionStatsForm != null)
+                    ((ConnectionStats)this.connectionStatsForm.Controls[0]).StopUpdates();
+            }
+            catch
+            {
+            }
+
+            // refresh config window if needed
+            /*if (MyView.current != null)
+            {
+                if (MyView.current.Name == "HWConfig")
+                    MyView.ShowScreen("HWConfig");
+                if (MyView.current.Name == "SWConfig")
+                    MyView.ShowScreen("SWConfig");
+            }*/
+
+            try
+            {
+                System.Threading.ThreadPool.QueueUserWorkItem((WaitCallback)delegate
+                {
+                    try
+                    {
+                        //MissionPlanner.Log.LogSort.SortLogs(Directory.GetFiles(Settings.Instance.LogDir, "*.tlog"));
+                    }
+                    catch
+                    {
+                    }
+                }
+                    );
+            }
+            catch
+            {
+            }
+
+            this.conect_button.Image = global::AUV_GCS.Properties.Resources.light_connect_icon;
+        }
+        void loadph_serial()
+        {
+            try
+            {
+                if (comPort.MAV.SerialString == "")
+                    return;
+
+                var serials = File.ReadAllLines("ph2_serial.csv");
+
+                foreach (var serial in serials)
+                {
+                    if (serial.Contains(comPort.MAV.SerialString.Substring(comPort.MAV.SerialString.Length - 26, 26)) &&
+                        !Settings.Instance.ContainsKey(comPort.MAV.SerialString.Replace(" ", "")))
+                    {
+                        CustomMessageBox.Show(
+                            "Your board has a Critical service bulletin please see [link;http://discuss.ardupilot.org/t/sb-0000001-critical-service-bulletin-for-beta-cube-2-1/14711;Click here]",
+                            Strings.ERROR);
+
+                        Settings.Instance[comPort.MAV.SerialString.Replace(" ", "")] = true.ToString();
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+        }
         private void ResetConnectionStats()
         {
             log.Info("Reset connection stats");
@@ -577,6 +671,163 @@ namespace AUV_GCS
             {
                 get { return global::AUV_GCS.Properties.Resources.wizardicon; }
             }
+        }
+        private void CMB_baudrate_TextChanged(object sender, EventArgs e)
+        {
+            comPortBaud = int.Parse(_connectionControl.CMB_baudrate.Text);
+            var sb = new StringBuilder();
+            int baud = 0;
+            for (int i = 0; i < _connectionControl.CMB_baudrate.Text.Length; i++)
+                if (char.IsDigit(_connectionControl.CMB_baudrate.Text[i]))
+                {
+                    sb.Append(_connectionControl.CMB_baudrate.Text[i]);
+                    baud = baud * 10 + _connectionControl.CMB_baudrate.Text[i] - '0';
+                }
+            if (_connectionControl.CMB_baudrate.Text != sb.ToString())
+            {
+                _connectionControl.CMB_baudrate.Text = sb.ToString();
+            }
+            try
+            {
+                if (baud > 0 && comPort.BaseStream.BaudRate != baud)
+                    comPort.BaseStream.BaudRate = baud;
+            }
+            catch (Exception)
+            {
+            }
+        }
+        private void CMB_serialport_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            comPortName = _connectionControl.CMB_serialport.Text;
+            if (comPortName == "UDP" || comPortName == "UDPCl" || comPortName == "TCP" || comPortName == "AUTO")
+            {
+                _connectionControl.CMB_baudrate.Enabled = false;
+            }
+            else
+            {
+                _connectionControl.CMB_baudrate.Enabled = true;
+            }
+
+            try
+            {
+                // check for saved baud rate and restore
+                if (Settings.Instance[_connectionControl.CMB_serialport.Text + "_BAUD"] != null)
+                {
+                    _connectionControl.CMB_baudrate.Text =
+                        Settings.Instance[_connectionControl.CMB_serialport.Text + "_BAUD"];
+                }
+            }
+            catch
+            {
+            }
+        }
+        private void CMB_serialport_Click(object sender, EventArgs e)
+        {
+            string oldport = _connectionControl.CMB_serialport.Text;
+            PopulateSerialportList();
+            if (_connectionControl.CMB_serialport.Items.Contains(oldport))
+                _connectionControl.CMB_serialport.Text = oldport;
+        }
+        void cmb_sysid_Click(object sender, EventArgs e)
+        {
+            MainForm._connectionControl.UpdateSysIDS();
+        }
+        private void ShowConnectionStatsForm()
+        {
+            if (this.connectionStatsForm == null || this.connectionStatsForm.IsDisposed)
+            {
+                // If the form has been closed, or never shown before, we need all new stuff
+                this.connectionStatsForm = new Form
+                {
+                    Width = 430,
+                    Height = 180,
+                    MaximizeBox = false,
+                    MinimizeBox = false,
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    Text = Strings.LinkStats
+                };
+                // Change the connection stats control, so that when/if the connection stats form is showing,
+                // there will be something to see
+                this.connectionStatsForm.Controls.Clear();
+                _connectionStats = new ConnectionStats(comPort);
+                this.connectionStatsForm.Controls.Add(_connectionStats);
+                this.connectionStatsForm.Width = _connectionStats.Width;
+            }
+
+            this.connectionStatsForm.Show();
+            ThemeManager.ApplyThemeTo(this.connectionStatsForm);
+        }
+        private void PopulateSerialportList()
+        {
+            _connectionControl.CMB_serialport.Items.Clear();
+            _connectionControl.CMB_serialport.Items.Add("AUTO");
+            _connectionControl.CMB_serialport.Items.AddRange(SerialPort.GetPortNames());
+            _connectionControl.CMB_serialport.Items.Add("TCP");
+            _connectionControl.CMB_serialport.Items.Add("UDP");
+            _connectionControl.CMB_serialport.Items.Add("UDPCl");
+        }
+        public void switchicons(menuicons icons)
+        {
+            if (displayicons.GetType() == icons.GetType())
+                return;
+
+            displayicons = icons;
+
+            MainMenu.BackColor = SystemColors.MenuBar;
+
+            MainMenu.BackgroundImage = displayicons.bg;
+            conect_button.Image = displayicons.connect;
+            conect_button.ForeColor = ThemeManager.TextColor;
+
+        }
+
+        private void conect_button_Click(object sender, EventArgs e)
+        {
+            comPort.giveComport = false;
+
+            log.Info("MenuConnect Start");
+
+            // sanity check
+            if (comPort.BaseStream.IsOpen && MainForm.comPort.MAV.cs.groundspeed > 4)
+            {
+                if (DialogResult.No ==
+                    CustomMessageBox.Show(Strings.Stillmoving, Strings.Disconnect, MessageBoxButtons.YesNo))
+                {
+                    return;
+                }
+            }
+
+            try
+            {
+                log.Info("Cleanup last logfiles");
+                // cleanup from any previous sessions
+                if (comPort.logfile != null)
+                    comPort.logfile.Close();
+
+                if (comPort.rawlogfile != null)
+                    comPort.rawlogfile.Close();
+            }
+            catch (Exception ex)
+            {
+                CustomMessageBox.Show(Strings.ErrorClosingLogFile + ex.Message, Strings.ERROR);
+            }
+
+            comPort.logfile = null;
+            comPort.rawlogfile = null;
+
+            // decide if this is a connect or disconnect
+            if (comPort.BaseStream.IsOpen)
+            {
+                doDisconnect(comPort);
+            }
+            else
+            {
+                doConnect(comPort, _connectionControl.CMB_serialport.Text, _connectionControl.CMB_baudrate.Text);
+            }
+
+            MainForm._connectionControl.UpdateSysIDS();
+
+            loadph_serial();
         }
     }
 }

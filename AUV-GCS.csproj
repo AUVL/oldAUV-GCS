@@ -277,6 +277,9 @@
     <Compile Include="Controls\ThemeColors.Designer.cs">
       <DependentUpon>ThemeColors.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ToolStripConnectionControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="CurrentState.cs" />
     <Compile Include="HIL\Hil.cs" />
     <Compile Include="HIL\Vector3.cs" />
