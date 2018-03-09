@@ -45,6 +45,7 @@ namespace AUV_GCS
         string updateBindingSourceThreadName = "";
 
         public static menuicons displayicons = new burntkermitmenuicons();
+        MissionPlanner.Controls.MainSwitcher MyView;
 
         public static bool threadrun;
         DateTime dataupdate = DateTime.Now;
@@ -61,6 +62,7 @@ namespace AUV_GCS
 
             _connectionControl.ShowLinkStats += (sender, e) => ShowConnectionStatsForm();
             switchicons(new burntkermitmenuicons());
+            MyView.ShowScreen("MainData");
         }
 
         public static MAVLinkInterface comPort
