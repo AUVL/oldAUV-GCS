@@ -181,7 +181,7 @@ namespace MissionPlanner.Controls
 
             current.Control.Focus();
         }
-
+      
         public class Screen
         {
             public string Name;

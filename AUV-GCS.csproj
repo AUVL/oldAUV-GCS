@@ -71,6 +71,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>AUV_GCS.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BitMiracle.LibTiff.NET40, Version=2.4.584.0, Culture=neutral, PublicKeyToken=53879b3e20e7a7d6, processorArchitecture=MSIL">
       <HintPath>packages\BitMiracle.LibTiff.NET.2.4.584.1\lib\net40\BitMiracle.LibTiff.NET40.dll</HintPath>
@@ -294,6 +297,12 @@
     <Compile Include="GCSViews\MainMap.Designer.cs">
       <DependentUpon>MainMap.cs</DependentUpon>
     </Compile>
+    <Compile Include="GCSViews\MainWorkspace.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\MainWorkspace.Designer.cs">
+      <DependentUpon>MainWorkspace.cs</DependentUpon>
+    </Compile>
     <Compile Include="HIL\Hil.cs" />
     <Compile Include="HIL\Vector3.cs" />
     <Compile Include="L10N.cs" />
@@ -451,6 +460,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\MainMap.resx">
       <DependentUpon>MainMap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\MainWorkspace.resx">
+      <DependentUpon>MainWorkspace.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

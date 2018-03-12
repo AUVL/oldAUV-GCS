@@ -33,7 +33,14 @@ namespace AUV_GCS
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.connect_button = new System.Windows.Forms.ToolStripButton();
             this.toolStripConnectionControl = new MissionPlanner.Controls.ToolStripConnectionControl();
+            this.Main_splitContainer = new System.Windows.Forms.SplitContainer();
+            this.Map_splitContainer = new System.Windows.Forms.SplitContainer();
             this.MainMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Main_splitContainer)).BeginInit();
+            this.Main_splitContainer.Panel2.SuspendLayout();
+            this.Main_splitContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Map_splitContainer)).BeginInit();
+            this.Map_splitContainer.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainMenu
@@ -64,15 +71,35 @@ namespace AUV_GCS
             this.toolStripConnectionControl.Name = "toolStripConnectionControl";
             resources.ApplyResources(this.toolStripConnectionControl, "toolStripConnectionControl");
             // 
+            // Main_splitContainer
+            // 
+            resources.ApplyResources(this.Main_splitContainer, "Main_splitContainer");
+            this.Main_splitContainer.Name = "Main_splitContainer";
+            // 
+            // Main_splitContainer.Panel2
+            // 
+            this.Main_splitContainer.Panel2.Controls.Add(this.Map_splitContainer);
+            // 
+            // Map_splitContainer
+            // 
+            resources.ApplyResources(this.Map_splitContainer, "Map_splitContainer");
+            this.Map_splitContainer.Name = "Map_splitContainer";
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
+            this.Controls.Add(this.Main_splitContainer);
             this.Controls.Add(this.MainMenu);
             this.MainMenuStrip = this.MainMenu;
             this.Name = "MainForm";
             this.MainMenu.ResumeLayout(false);
             this.MainMenu.PerformLayout();
+            this.Main_splitContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Main_splitContainer)).EndInit();
+            this.Main_splitContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Map_splitContainer)).EndInit();
+            this.Map_splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -83,5 +110,7 @@ namespace AUV_GCS
         public System.Windows.Forms.MenuStrip MainMenu;
         public System.Windows.Forms.ToolStripButton connect_button;
         private MissionPlanner.Controls.ToolStripConnectionControl toolStripConnectionControl;
+        private System.Windows.Forms.SplitContainer Main_splitContainer;
+        private System.Windows.Forms.SplitContainer Map_splitContainer;
     }
 }

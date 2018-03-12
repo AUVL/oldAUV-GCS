@@ -44,9 +44,9 @@ namespace AUV_GCS
         volatile int updateBindingSourcecount;
         string updateBindingSourceThreadName = "";
 
-        public static MainSwitcher View;
         public GCSViews.MainMap MainMap;
         public GCSViews.MainData MainData;
+        public GCSViews.MainWorkspace MainWorkspace;
 
         public static menuicons displayicons = new burntkermitmenuicons();
        
@@ -67,21 +67,21 @@ namespace AUV_GCS
             _connectionControl.ShowLinkStats += (sender, e) => ShowConnectionStatsForm();
             switchicons(new burntkermitmenuicons());
 
-            MissionPlanner.Controls.MainSwitcher MyView;
-            MyView = new MainSwitcher(this);
 
-            View = MyView;
             try
             {
 
                 MainMap = new GCSViews.MainMap();
                 MainData = new GCSViews.MainData();
-                MainMap.Width = MyView.Width;
-                MyView.AddScreen(new MainSwitcher.Screen("MainMap", MainMap, true));
-                MyView.AddScreen(new MainSwitcher.Screen("MainData", MainData, true));
-                //MyView.ShowScreen("MainMap");
-                MyView.ShowScreen("MainData");
-
+                MainWorkspace = new GCSViews.MainWorkspace();
+               
+                MainData.Visible = true;
+                MainMap.Visible = true;
+                MainWorkspace.Visible = true;
+               
+                Main_splitContainer.Panel1.Controls.Add(MainData);
+                Map_splitContainer.Panel1.Controls.Add(MainMap);
+                Map_splitContainer.Panel2.Controls.Add(MainWorkspace);
             }
             catch (Exception e)
             {
