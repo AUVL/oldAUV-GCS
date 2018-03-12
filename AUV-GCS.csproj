@@ -206,6 +206,7 @@
     <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
     </Reference>
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Speech" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows" />
@@ -281,6 +282,18 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CurrentState.cs" />
+    <Compile Include="GCSViews\MainData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\MainData.Designer.cs">
+      <DependentUpon>MainData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GCSViews\MainMap.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GCSViews\MainMap.Designer.cs">
+      <DependentUpon>MainMap.cs</DependentUpon>
+    </Compile>
     <Compile Include="HIL\Hil.cs" />
     <Compile Include="HIL\Vector3.cs" />
     <Compile Include="L10N.cs" />
@@ -432,6 +445,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ThemeColors.zh-Hans.resx">
       <DependentUpon>ThemeColors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\MainData.resx">
+      <DependentUpon>MainData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GCSViews\MainMap.resx">
+      <DependentUpon>MainMap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
