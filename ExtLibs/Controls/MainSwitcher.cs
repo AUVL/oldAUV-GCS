@@ -30,7 +30,6 @@ namespace MissionPlanner.Controls
         public MainSwitcher(Control Parent)
         {
             MainControl.Dock = DockStyle.Fill;
-
             Parent.Controls.Add(MainControl);
         }
 

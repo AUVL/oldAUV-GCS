@@ -44,7 +44,12 @@ namespace AUV_GCS
         volatile int updateBindingSourcecount;
         string updateBindingSourceThreadName = "";
 
+        public static MainSwitcher View;
+        public GCSViews.MainMap MainMap;
+        public GCSViews.MainData MainData;
+
         public static menuicons displayicons = new burntkermitmenuicons();
+       
 
         public static bool threadrun;
         DateTime dataupdate = DateTime.Now;
@@ -61,6 +66,28 @@ namespace AUV_GCS
 
             _connectionControl.ShowLinkStats += (sender, e) => ShowConnectionStatsForm();
             switchicons(new burntkermitmenuicons());
+
+            MissionPlanner.Controls.MainSwitcher MyView;
+            MyView = new MainSwitcher(this);
+
+            View = MyView;
+            try
+            {
+
+                MainMap = new GCSViews.MainMap();
+                MainData = new GCSViews.MainData();
+                MainMap.Width = MyView.Width;
+                MyView.AddScreen(new MainSwitcher.Screen("MainMap", MainMap, true));
+                MyView.AddScreen(new MainSwitcher.Screen("MainData", MainData, true));
+                //MyView.ShowScreen("MainMap");
+                MyView.ShowScreen("MainData");
+
+            }
+            catch (Exception e)
+            {
+                Application.Exit();
+            }
+
         }
 
         public static MAVLinkInterface comPort
@@ -435,7 +462,7 @@ namespace AUV_GCS
                 }
 
                 // set connected icon
-                this.conect_button.Image = displayicons.disconnect;
+                this.connect_button.Image = displayicons.disconnect;
             }
             catch (Exception ex)
             {
@@ -510,7 +537,7 @@ namespace AUV_GCS
             {
             }
 
-            this.conect_button.Image = global::AUV_GCS.Properties.Resources.light_connect_icon;
+            this.connect_button.Image = global::AUV_GCS.Properties.Resources.light_connect_icon;
         }
         void loadph_serial()
         {
@@ -560,26 +587,26 @@ namespace AUV_GCS
                 //                        Console.WriteLine(DateTime.Now.Millisecond);
                 if (comPort.BaseStream.IsOpen)
                 {
-                    if ((string)this.conect_button.Image.Tag != "Disconnect")
+                    if ((string)this.connect_button.Image.Tag != "Disconnect")
                     {
                         this.BeginInvoke((MethodInvoker)delegate
                         {
-                            this.conect_button.Image = displayicons.disconnect;
-                            this.conect_button.Image.Tag = "Disconnect";
-                            this.conect_button.Text = Strings.DISCONNECTc;
+                            this.connect_button.Image = displayicons.disconnect;
+                            this.connect_button.Image.Tag = "Disconnect";
+                            this.connect_button.Text = Strings.DISCONNECTc;
                             _connectionControl.IsConnected(true);
                         });
                     }
                 }
                 else
                 {
-                    if (this.conect_button.Image != null && (string)this.conect_button.Image.Tag != "Connect")
+                    if (this.connect_button.Image != null && (string)this.connect_button.Image.Tag != "Connect")
                     {
                         this.BeginInvoke((MethodInvoker)delegate
                         {
-                            this.conect_button.Image = displayicons.connect;
-                            this.conect_button.Image.Tag = "Connect";
-                            this.conect_button.Text = Strings.CONNECTc;
+                            this.connect_button.Image = displayicons.connect;
+                            this.connect_button.Image.Tag = "Connect";
+                            this.connect_button.Text = Strings.CONNECTc;
                             _connectionControl.IsConnected(false);
                             if (_connectionStats != null)
                             {
@@ -776,8 +803,8 @@ namespace AUV_GCS
             MainMenu.BackColor = SystemColors.MenuBar;
 
             MainMenu.BackgroundImage = displayicons.bg;
-            conect_button.Image = displayicons.connect;
-            conect_button.ForeColor = ThemeManager.TextColor;
+            connect_button.Image = displayicons.connect;
+            connect_button.ForeColor = ThemeManager.TextColor;
 
         }
 

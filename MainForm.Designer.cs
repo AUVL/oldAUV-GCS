@@ -31,7 +31,7 @@ namespace AUV_GCS
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MainMenu = new System.Windows.Forms.MenuStrip();
-            this.conect_button = new System.Windows.Forms.ToolStripButton();
+            this.connect_button = new System.Windows.Forms.ToolStripButton();
             this.toolStripConnectionControl = new MissionPlanner.Controls.ToolStripConnectionControl();
             this.MainMenu.SuspendLayout();
             this.SuspendLayout();
@@ -39,21 +39,22 @@ namespace AUV_GCS
             // MainMenu
             // 
             this.MainMenu.BackgroundImage = global::AUV_GCS.Properties.Resources.bgdark;
+            this.MainMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.conect_button,
+            this.connect_button,
             this.toolStripConnectionControl});
             resources.ApplyResources(this.MainMenu, "MainMenu");
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Stretch = false;
             // 
-            // conect_button
+            // connect_button
             // 
-            this.conect_button.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.conect_button.ForeColor = System.Drawing.Color.White;
-            this.conect_button.Image = global::AUV_GCS.Properties.Resources.light_connect_icon;
-            resources.ApplyResources(this.conect_button, "conect_button");
-            this.conect_button.Name = "conect_button";
-            this.conect_button.Click += new System.EventHandler(this.conect_button_Click);
+            this.connect_button.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.connect_button.ForeColor = System.Drawing.Color.White;
+            this.connect_button.Image = global::AUV_GCS.Properties.Resources.light_connect_icon;
+            resources.ApplyResources(this.connect_button, "connect_button");
+            this.connect_button.Name = "connect_button";
+            this.connect_button.Click += new System.EventHandler(this.conect_button_Click);
             // 
             // toolStripConnectionControl
             // 
@@ -80,7 +81,7 @@ namespace AUV_GCS
         #endregion
 
         public System.Windows.Forms.MenuStrip MainMenu;
-        public System.Windows.Forms.ToolStripButton conect_button;
+        public System.Windows.Forms.ToolStripButton connect_button;
         private MissionPlanner.Controls.ToolStripConnectionControl toolStripConnectionControl;
     }
 }
