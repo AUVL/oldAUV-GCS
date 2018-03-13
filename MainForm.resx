@@ -214,10 +214,10 @@
     <value>1</value>
   </data>
   <data name="Map_splitContainer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>592, 376</value>
+    <value>594, 378</value>
   </data>
   <data name="Map_splitContainer.SplitterDistance" type="System.Int32, mscorlib">
-    <value>197</value>
+    <value>198</value>
   </data>
   <data name="Map_splitContainer.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>

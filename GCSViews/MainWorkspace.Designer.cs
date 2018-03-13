@@ -32,8 +32,7 @@
             // 
             // MainWorkspace
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.MenuHighlight;
             this.Name = "MainWorkspace";
             this.Size = new System.Drawing.Size(509, 634);

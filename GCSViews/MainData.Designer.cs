@@ -113,21 +113,20 @@
             this.panel1.Controls.Add(this.myLabel3);
             this.panel1.Controls.Add(this.myLabel5);
             this.panel1.Controls.Add(this.myLabel4);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.MinimumSize = new System.Drawing.Size(458, 462);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(458, 470);
+            this.panel1.Size = new System.Drawing.Size(458, 462);
             this.panel1.TabIndex = 1;
             // 
             // MainData
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.AutoSize = true;
             this.Controls.Add(this.panel1);
-            this.Margin = new System.Windows.Forms.Padding(0);
             this.MinimumSize = new System.Drawing.Size(458, 462);
             this.Name = "MainData";
-            this.Size = new System.Drawing.Size(461, 473);
+            this.Size = new System.Drawing.Size(458, 462);
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
