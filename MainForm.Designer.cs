@@ -73,6 +73,7 @@ namespace AUV_GCS
             // 
             // Main_splitContainer
             // 
+            this.Main_splitContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             resources.ApplyResources(this.Main_splitContainer, "Main_splitContainer");
             this.Main_splitContainer.Name = "Main_splitContainer";
             // 

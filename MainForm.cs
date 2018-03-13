@@ -78,10 +78,14 @@ namespace AUV_GCS
                 MainData.Visible = true;
                 MainMap.Visible = true;
                 MainWorkspace.Visible = true;
-               
+
                 Main_splitContainer.Panel1.Controls.Add(MainData);
                 Map_splitContainer.Panel1.Controls.Add(MainMap);
                 Map_splitContainer.Panel2.Controls.Add(MainWorkspace);
+
+                MainData.Dock = DockStyle.Fill;
+                MainMap.Dock = DockStyle.Fill;
+                MainWorkspace.Dock = DockStyle.Fill;
             }
             catch (Exception e)
             {
