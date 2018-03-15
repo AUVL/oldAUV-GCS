@@ -241,6 +241,8 @@
     <Compile Include="Controls\ConnectionStats.Designer.cs">
       <DependentUpon>ConnectionStats.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Icon\Icon.cs" />
+    <Compile Include="Controls\Icon\Polygon.cs" />
     <Compile Include="Controls\MavlinkCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -284,7 +286,20 @@
     <Compile Include="Controls\ToolStripConnectionControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\Waypoints\Spline2.cs" />
     <Compile Include="CurrentState.cs" />
+    <Compile Include="FunctionTabControl\AutoGuideControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FunctionTabControl\AutoGuideControl.Designer.cs">
+      <DependentUpon>AutoGuideControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FunctionTabControl\WayPointData.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="FunctionTabControl\WayPointData.Designer.cs">
+      <DependentUpon>WayPointData.cs</DependentUpon>
+    </Compile>
     <Compile Include="GCSViews\MainData.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -304,6 +319,8 @@
       <DependentUpon>MainWorkspace.cs</DependentUpon>
     </Compile>
     <Compile Include="HIL\Hil.cs" />
+    <Compile Include="HIL\Matrix3.cs" />
+    <Compile Include="HIL\Utils.cs" />
     <Compile Include="HIL\Vector3.cs" />
     <Compile Include="L10N.cs" />
     <Compile Include="MainForm.cs">
@@ -330,7 +347,10 @@
     <Compile Include="Utilities\ExpireType.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Firmware.cs" />
+    <Compile Include="Utilities\GMapMarkerAirport.cs" />
     <Compile Include="Utilities\GMapMarkerOverlapCount.cs" />
+    <Compile Include="Utilities\GMapMarkerPOI.cs" />
+    <Compile Include="Utilities\GMapMarkerRallyPt.cs" />
     <Compile Include="Utilities\ICorrections.cs" />
     <Compile Include="Utilities\LangUtility.cs" />
     <Compile Include="Utilities\nmea.cs" />
@@ -338,6 +358,7 @@
     <Compile Include="Utilities\ParameterMetaDataRepository.cs" />
     <Compile Include="Utilities\ParameterMetaDataRepositoryAPM.cs" />
     <Compile Include="Utilities\ParameterMetaDataRepositoryPX4.cs" />
+    <Compile Include="Utilities\POI.cs" />
     <Compile Include="Utilities\Proximity.cs" />
     <Compile Include="Utilities\rtcm3.cs" />
     <Compile Include="Utilities\sbp.cs" />
@@ -454,6 +475,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ThemeColors.zh-Hans.resx">
       <DependentUpon>ThemeColors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FunctionTabControl\AutoGuideControl.resx">
+      <DependentUpon>AutoGuideControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FunctionTabControl\WayPointData.resx">
+      <DependentUpon>WayPointData.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GCSViews\MainData.resx">
       <DependentUpon>MainData.cs</DependentUpon>
@@ -572,6 +599,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="mavcmd.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <!--<Content Include="mavcmd.xml" /> -->
     <Content Include="Resources\01_01.png" />
     <Content Include="Resources\01_03.png" />
     <Content Include="Resources\01_05.png" />

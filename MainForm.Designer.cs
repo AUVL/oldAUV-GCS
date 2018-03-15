@@ -73,6 +73,7 @@ namespace AUV_GCS
             // 
             // Main_splitContainer
             // 
+            this.Main_splitContainer.BackColor = System.Drawing.Color.Transparent;
             resources.ApplyResources(this.Main_splitContainer, "Main_splitContainer");
             this.Main_splitContainer.Name = "Main_splitContainer";
             // 
@@ -89,6 +90,7 @@ namespace AUV_GCS
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             resources.ApplyResources(this, "$this");
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.Controls.Add(this.Main_splitContainer);
             this.Controls.Add(this.MainMenu);
             this.MainMenuStrip = this.MainMenu;

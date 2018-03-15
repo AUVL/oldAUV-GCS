@@ -66,10 +66,9 @@ namespace AUV_GCS
 
             _connectionControl.ShowLinkStats += (sender, e) => ShowConnectionStatsForm();
             switchicons(new burntkermitmenuicons());
-
-
             try
             {
+                
 
                 MainMap = new GCSViews.MainMap();
                 MainData = new GCSViews.MainData();
@@ -803,7 +802,7 @@ namespace AUV_GCS
                 return;
 
             displayicons = icons;
-
+            
             MainMenu.BackColor = SystemColors.MenuBar;
 
             MainMenu.BackgroundImage = displayicons.bg;
