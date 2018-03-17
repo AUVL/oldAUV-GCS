@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+using MissionPlanner.Controls;
 namespace AUV_GCS
 {
     partial class MainForm
@@ -14,6 +15,8 @@ namespace AUV_GCS
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
+            if (PluginThreadrunner != null)
+                PluginThreadrunner.Dispose();
             if (disposing && (components != null))
             {
                 components.Dispose();
@@ -29,18 +32,21 @@ namespace AUV_GCS
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.connect_button = new System.Windows.Forms.ToolStripButton();
             this.toolStripConnectionControl = new MissionPlanner.Controls.ToolStripConnectionControl();
             this.Main_splitContainer = new System.Windows.Forms.SplitContainer();
             this.Map_splitContainer = new System.Windows.Forms.SplitContainer();
+            this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.MainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Main_splitContainer)).BeginInit();
             this.Main_splitContainer.Panel2.SuspendLayout();
             this.Main_splitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Map_splitContainer)).BeginInit();
             this.Map_splitContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
             this.SuspendLayout();
             // 
             // MainMenu
@@ -86,6 +92,10 @@ namespace AUV_GCS
             resources.ApplyResources(this.Map_splitContainer, "Map_splitContainer");
             this.Map_splitContainer.Name = "Map_splitContainer";
             // 
+            // bindingSource1
+            // 
+            this.bindingSource1.DataSource = typeof(MissionPlanner.CurrentState);
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -102,6 +112,7 @@ namespace AUV_GCS
             this.Main_splitContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Map_splitContainer)).EndInit();
             this.Map_splitContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -114,5 +125,6 @@ namespace AUV_GCS
         private MissionPlanner.Controls.ToolStripConnectionControl toolStripConnectionControl;
         private System.Windows.Forms.SplitContainer Main_splitContainer;
         private System.Windows.Forms.SplitContainer Map_splitContainer;
+        private System.Windows.Forms.BindingSource bindingSource1;
     }
 }

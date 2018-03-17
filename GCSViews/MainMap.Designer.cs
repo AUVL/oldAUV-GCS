@@ -1,4 +1,6 @@
-﻿namespace AUV_GCS.GCSViews
+﻿using MissionPlanner.Controls;
+
+namespace AUV_GCS.GCSViews
 {
     partial class MainMap
     {
@@ -17,6 +19,24 @@
             {
                 components.Dispose();
             }
+            if (currentMarker != null)
+                currentMarker.Dispose();
+            if (drawnpolygon != null)
+                drawnpolygon.Dispose();
+            if (kmlpolygonsoverlay != null)
+                kmlpolygonsoverlay.Dispose();
+            if (wppolygon != null)
+                wppolygon.Dispose();
+            if (top != null)
+                top.Dispose();
+            if (geofencepolygon != null)
+                geofencepolygon.Dispose();
+            if (geofenceoverlay != null)
+                geofenceoverlay.Dispose();
+            if (drawnpolygonsoverlay != null)
+                drawnpolygonsoverlay.Dispose();
+            if (center != null)
+                center.Dispose();
             base.Dispose(disposing);
         }
 
@@ -36,15 +56,16 @@
             this.clearPolygonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.gMapControl1 = new MissionPlanner.Controls.myGMAP();
-            this.coords1 = new MissionPlanner.Controls.Coords();
-            this.Label1 = new System.Windows.Forms.Label();
-            this.TXT_homelat = new System.Windows.Forms.TextBox();
-            this.Label2 = new System.Windows.Forms.Label();
-            this.TXT_homelng = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.TXT_homealt = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.LinkLabel();
             this.button1 = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.LinkLabel();
+            this.TXT_homealt = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.TXT_homelng = new System.Windows.Forms.TextBox();
+            this.Label2 = new System.Windows.Forms.Label();
+            this.TXT_homelat = new System.Windows.Forms.TextBox();
+            this.Label1 = new System.Windows.Forms.Label();
+            this.coords1 = new MissionPlanner.Controls.Coords();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -57,7 +78,9 @@
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.drawPolygonToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(156, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 48);
+            this.contextMenuStrip1.Closed += new System.Windows.Forms.ToolStripDropDownClosedEventHandler(this.contextMenuStrip1_Closed);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // drawPolygonToolStripMenuItem
             // 
@@ -65,7 +88,7 @@
             this.addPologonPointToolStripMenuItem,
             this.clearPolygonToolStripMenuItem});
             this.drawPolygonToolStripMenuItem.Name = "drawPolygonToolStripMenuItem";
-            this.drawPolygonToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.drawPolygonToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.drawPolygonToolStripMenuItem.Text = "Draw Polygon";
             // 
             // addPologonPointToolStripMenuItem
@@ -102,8 +125,8 @@
             this.splitContainer1.Panel2.Controls.Add(this.TXT_homelat);
             this.splitContainer1.Panel2.Controls.Add(this.Label1);
             this.splitContainer1.Panel2.Controls.Add(this.coords1);
-            this.splitContainer1.Size = new System.Drawing.Size(642, 460);
-            this.splitContainer1.SplitterDistance = 412;
+            this.splitContainer1.Size = new System.Drawing.Size(891, 495);
+            this.splitContainer1.SplitterDistance = 443;
             this.splitContainer1.TabIndex = 2;
             // 
             // gMapControl1
@@ -129,9 +152,84 @@
             this.gMapControl1.SelectedArea = ((GMap.NET.RectLatLng)(resources.GetObject("gMapControl1.SelectedArea")));
             this.gMapControl1.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.gMapControl1.ShowTileGridLines = false;
-            this.gMapControl1.Size = new System.Drawing.Size(642, 412);
+            this.gMapControl1.Size = new System.Drawing.Size(891, 443);
             this.gMapControl1.TabIndex = 0;
             this.gMapControl1.Zoom = 0D;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(618, 14);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 18;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label4.Location = new System.Drawing.Point(209, 19);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(77, 12);
+            this.label4.TabIndex = 17;
+            this.label4.TabStop = true;
+            this.label4.Text = "Home Location";
+            this.label4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.label4_LinkClicked);
+            // 
+            // TXT_homealt
+            // 
+            this.TXT_homealt.Location = new System.Drawing.Point(547, 16);
+            this.TXT_homealt.Name = "TXT_homealt";
+            this.TXT_homealt.Size = new System.Drawing.Size(65, 22);
+            this.TXT_homealt.TabIndex = 16;
+            this.TXT_homealt.TextChanged += new System.EventHandler(this.TXT_homealt_TextChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label3.Location = new System.Drawing.Point(496, 19);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(45, 12);
+            this.label3.TabIndex = 15;
+            this.label3.Text = "Alt (abs)";
+            // 
+            // TXT_homelng
+            // 
+            this.TXT_homelng.Location = new System.Drawing.Point(425, 16);
+            this.TXT_homelng.Name = "TXT_homelng";
+            this.TXT_homelng.Size = new System.Drawing.Size(65, 22);
+            this.TXT_homelng.TabIndex = 14;
+            this.TXT_homelng.TextChanged += new System.EventHandler(this.TXT_homelng_TextChanged);
+            // 
+            // Label2
+            // 
+            this.Label2.AutoSize = true;
+            this.Label2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.Label2.Location = new System.Drawing.Point(389, 19);
+            this.Label2.Name = "Label2";
+            this.Label2.Size = new System.Drawing.Size(30, 12);
+            this.Label2.TabIndex = 5;
+            this.Label2.Text = "Long";
+            // 
+            // TXT_homelat
+            // 
+            this.TXT_homelat.Location = new System.Drawing.Point(318, 16);
+            this.TXT_homelat.Name = "TXT_homelat";
+            this.TXT_homelat.Size = new System.Drawing.Size(65, 22);
+            this.TXT_homelat.TabIndex = 2;
+            this.TXT_homelat.TextChanged += new System.EventHandler(this.TXT_homelat_TextChanged);
+            // 
+            // Label1
+            // 
+            this.Label1.AutoSize = true;
+            this.Label1.Location = new System.Drawing.Point(292, 19);
+            this.Label1.Name = "Label1";
+            this.Label1.Size = new System.Drawing.Size(20, 12);
+            this.Label1.TabIndex = 1;
+            this.Label1.Text = "Lat";
             // 
             // coords1
             // 
@@ -146,83 +244,18 @@
             this.coords1.TabIndex = 0;
             this.coords1.Vertical = false;
             // 
-            // Label1
+            // timer1
             // 
-            this.Label1.AutoSize = true;
-            this.Label1.Location = new System.Drawing.Point(292, 19);
-            this.Label1.Name = "Label1";
-            this.Label1.Size = new System.Drawing.Size(20, 12);
-            this.Label1.TabIndex = 1;
-            this.Label1.Text = "Lat";
-            // 
-            // TXT_homelat
-            // 
-            this.TXT_homelat.Location = new System.Drawing.Point(318, 16);
-            this.TXT_homelat.Name = "TXT_homelat";
-            this.TXT_homelat.Size = new System.Drawing.Size(65, 22);
-            this.TXT_homelat.TabIndex = 2;
-            // 
-            // Label2
-            // 
-            this.Label2.AutoSize = true;
-            this.Label2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Label2.Location = new System.Drawing.Point(389, 19);
-            this.Label2.Name = "Label2";
-            this.Label2.Size = new System.Drawing.Size(30, 12);
-            this.Label2.TabIndex = 5;
-            this.Label2.Text = "Long";
-            // 
-            // TXT_homelng
-            // 
-            this.TXT_homelng.Location = new System.Drawing.Point(425, 16);
-            this.TXT_homelng.Name = "TXT_homelng";
-            this.TXT_homelng.Size = new System.Drawing.Size(65, 22);
-            this.TXT_homelng.TabIndex = 14;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label3.Location = new System.Drawing.Point(496, 19);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(45, 12);
-            this.label3.TabIndex = 15;
-            this.label3.Text = "Alt (abs)";
-            // 
-            // TXT_homealt
-            // 
-            this.TXT_homealt.Location = new System.Drawing.Point(547, 16);
-            this.TXT_homealt.Name = "TXT_homealt";
-            this.TXT_homealt.Size = new System.Drawing.Size(65, 22);
-            this.TXT_homealt.TabIndex = 16;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label4.Location = new System.Drawing.Point(209, 19);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(77, 12);
-            this.label4.TabIndex = 17;
-            this.label4.TabStop = true;
-            this.label4.Text = "Home Location";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(618, 14);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 18;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.timer1.Interval = 1200;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // MainMap
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.splitContainer1);
             this.Name = "MainMap";
-            this.Size = new System.Drawing.Size(642, 460);
+            this.Size = new System.Drawing.Size(891, 495);
+            this.Load += new System.EventHandler(this.MainMap_Load);
             this.contextMenuStrip1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -249,5 +282,6 @@
         private System.Windows.Forms.TextBox TXT_homelat;
         private System.Windows.Forms.Label Label1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Timer timer1;
     }
 }

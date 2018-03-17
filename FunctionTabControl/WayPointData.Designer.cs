@@ -32,6 +32,10 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.TXT_WPRad = new System.Windows.Forms.TextBox();
+            this.LBL_WPRad = new System.Windows.Forms.Label();
+            this.TXT_DefaultAlt = new System.Windows.Forms.TextBox();
+            this.LBL_defalutalt = new System.Windows.Forms.Label();
             this.Commands = new MissionPlanner.Controls.MyDataGridView();
             this.Command = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Lat = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -42,16 +46,16 @@
             this.Down = new System.Windows.Forms.DataGridViewImageColumn();
             this.Dist = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Group = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LBL_defalutalt = new System.Windows.Forms.Label();
-            this.TXT_DefaultAlt = new System.Windows.Forms.TextBox();
-            this.LBL_WPRad = new System.Windows.Forms.Label();
-            this.TXT_WPRad = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.TXT_loiterrad = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Commands)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.TXT_loiterrad);
+            this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.TXT_WPRad);
             this.panel1.Controls.Add(this.LBL_WPRad);
             this.panel1.Controls.Add(this.TXT_DefaultAlt);
@@ -62,6 +66,42 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(571, 318);
             this.panel1.TabIndex = 0;
+            // 
+            // TXT_WPRad
+            // 
+            this.TXT_WPRad.Location = new System.Drawing.Point(15, 24);
+            this.TXT_WPRad.Name = "TXT_WPRad";
+            this.TXT_WPRad.Size = new System.Drawing.Size(36, 22);
+            this.TXT_WPRad.TabIndex = 23;
+            this.TXT_WPRad.Text = "30";
+            // 
+            // LBL_WPRad
+            // 
+            this.LBL_WPRad.AutoSize = true;
+            this.LBL_WPRad.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.LBL_WPRad.Location = new System.Drawing.Point(4, 9);
+            this.LBL_WPRad.Name = "LBL_WPRad";
+            this.LBL_WPRad.Size = new System.Drawing.Size(57, 12);
+            this.LBL_WPRad.TabIndex = 22;
+            this.LBL_WPRad.Text = "WP Radius";
+            // 
+            // TXT_DefaultAlt
+            // 
+            this.TXT_DefaultAlt.Location = new System.Drawing.Point(143, 24);
+            this.TXT_DefaultAlt.Name = "TXT_DefaultAlt";
+            this.TXT_DefaultAlt.Size = new System.Drawing.Size(40, 22);
+            this.TXT_DefaultAlt.TabIndex = 21;
+            this.TXT_DefaultAlt.Text = "100";
+            // 
+            // LBL_defalutalt
+            // 
+            this.LBL_defalutalt.AutoSize = true;
+            this.LBL_defalutalt.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.LBL_defalutalt.Location = new System.Drawing.Point(141, 9);
+            this.LBL_defalutalt.Name = "LBL_defalutalt";
+            this.LBL_defalutalt.Size = new System.Drawing.Size(56, 12);
+            this.LBL_defalutalt.TabIndex = 20;
+            this.LBL_defalutalt.Text = "Default Alt";
             // 
             // Commands
             // 
@@ -188,41 +228,23 @@
             this.Group.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Group.Width = 50;
             // 
-            // LBL_defalutalt
+            // label5
             // 
-            this.LBL_defalutalt.AutoSize = true;
-            this.LBL_defalutalt.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.LBL_defalutalt.Location = new System.Drawing.Point(67, 9);
-            this.LBL_defalutalt.Name = "LBL_defalutalt";
-            this.LBL_defalutalt.Size = new System.Drawing.Size(56, 12);
-            this.LBL_defalutalt.TabIndex = 20;
-            this.LBL_defalutalt.Text = "Default Alt";
+            this.label5.AutoSize = true;
+            this.label5.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label5.Location = new System.Drawing.Point(67, 9);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(68, 12);
+            this.label5.TabIndex = 34;
+            this.label5.Text = "Loiter Radius";
             // 
-            // TXT_DefaultAlt
+            // TXT_loiterrad
             // 
-            this.TXT_DefaultAlt.Location = new System.Drawing.Point(69, 24);
-            this.TXT_DefaultAlt.Name = "TXT_DefaultAlt";
-            this.TXT_DefaultAlt.Size = new System.Drawing.Size(40, 22);
-            this.TXT_DefaultAlt.TabIndex = 21;
-            this.TXT_DefaultAlt.Text = "100";
-            // 
-            // LBL_WPRad
-            // 
-            this.LBL_WPRad.AutoSize = true;
-            this.LBL_WPRad.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.LBL_WPRad.Location = new System.Drawing.Point(4, 9);
-            this.LBL_WPRad.Name = "LBL_WPRad";
-            this.LBL_WPRad.Size = new System.Drawing.Size(57, 12);
-            this.LBL_WPRad.TabIndex = 22;
-            this.LBL_WPRad.Text = "WP Radius";
-            // 
-            // TXT_WPRad
-            // 
-            this.TXT_WPRad.Location = new System.Drawing.Point(15, 24);
-            this.TXT_WPRad.Name = "TXT_WPRad";
-            this.TXT_WPRad.Size = new System.Drawing.Size(36, 22);
-            this.TXT_WPRad.TabIndex = 23;
-            this.TXT_WPRad.Text = "30";
+            this.TXT_loiterrad.Location = new System.Drawing.Point(82, 24);
+            this.TXT_loiterrad.Name = "TXT_loiterrad";
+            this.TXT_loiterrad.Size = new System.Drawing.Size(36, 22);
+            this.TXT_loiterrad.TabIndex = 35;
+            this.TXT_loiterrad.Text = "45";
             // 
             // WayPointData
             // 
@@ -254,5 +276,7 @@
         public System.Windows.Forms.TextBox TXT_WPRad;
         private System.Windows.Forms.Label LBL_WPRad;
         public System.Windows.Forms.DataGridViewTextBoxColumn Dist;
+        public System.Windows.Forms.TextBox TXT_loiterrad;
+        private System.Windows.Forms.Label label5;
     }
 }

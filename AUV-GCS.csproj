@@ -93,6 +93,9 @@
     <Reference Include="Flurl, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Flurl.2.3.0\lib\netstandard1.4\Flurl.dll</HintPath>
     </Reference>
+    <Reference Include="GeoJSON.Net, Version=0.1.51.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\GeoJSON.Net.0.1.51\lib\portable-net40+sl5+wp80+win8+wpa81\GeoJSON.Net.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
@@ -212,6 +215,7 @@
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Speech" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -224,7 +228,13 @@
     <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Xml.ReaderWriter.4.3.0\lib\net46\System.Xml.ReaderWriter.dll</HintPath>
     </Reference>
+    <Reference Include="Transitions">
+      <HintPath>ExtLibs\Transitions.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
+    <Reference Include="Zeroconf">
+      <HintPath>ExtLibs\Zeroconf.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common.cs" />
@@ -265,6 +275,7 @@
     <Compile Include="Controls\MyDataGridView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\PreFlight\CheckListItem.cs" />
     <Compile Include="Controls\SerialInjectGPS.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -323,17 +334,26 @@
     <Compile Include="HIL\Utils.cs" />
     <Compile Include="HIL\Vector3.cs" />
     <Compile Include="L10N.cs" />
+    <Compile Include="Log\BinaryLog.cs" />
+    <Compile Include="Log\CollectionBuffer.cs" />
+    <Compile Include="Log\DFLog.cs" />
+    <Compile Include="Log\LogMap.cs" />
+    <Compile Include="Log\LogSort.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Maps\WMSProvider.cs" />
     <Compile Include="Mavlink\MAVAuthKeys.cs" />
     <Compile Include="Mavlink\MAVLinkInterface.cs" />
     <Compile Include="Mavlink\MAVLinkSerialPort.cs" />
     <Compile Include="Mavlink\MAVList.cs" />
     <Compile Include="Mavlink\MAVState.cs" />
+    <Compile Include="NoFly\NoFly.cs" />
+    <Compile Include="Plugin\Plugin.cs" />
+    <Compile Include="Plugin\PluginLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Strings.cs">
@@ -342,6 +362,11 @@
     <Compile Include="Strings.Designer.cs">
       <DependentUpon>Strings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\Airports.cs" />
+    <Compile Include="Utilities\AltitudeAngel\AltitudeAngel.cs" />
+    <Compile Include="Utilities\AltitudeAngel\MapAdapter.cs" />
+    <Compile Include="Utilities\AltitudeAngel\MissionPlannerAdaptor.cs" />
+    <Compile Include="Utilities\AltitudeAngel\OverlayAdapter.cs" />
     <Compile Include="Utilities\BoardDetect.cs" />
     <Compile Include="Utilities\Crypto.cs" />
     <Compile Include="Utilities\ExpireType.cs" />
@@ -351,6 +376,7 @@
     <Compile Include="Utilities\GMapMarkerOverlapCount.cs" />
     <Compile Include="Utilities\GMapMarkerPOI.cs" />
     <Compile Include="Utilities\GMapMarkerRallyPt.cs" />
+    <Compile Include="Utilities\httpserver.cs" />
     <Compile Include="Utilities\ICorrections.cs" />
     <Compile Include="Utilities\LangUtility.cs" />
     <Compile Include="Utilities\nmea.cs" />
@@ -368,6 +394,11 @@
     <Compile Include="Utilities\ThemeManager.cs" />
     <Compile Include="Utilities\Tracking.cs" />
     <Compile Include="Utilities\ubx_m8p.cs" />
+    <Compile Include="Utilities\UDPMavlinkShim.cs" />
+    <Compile Include="Utilities\UDPVideoShim.cs" />
+    <Compile Include="Utilities\ZeroConf.cs" />
+    <Compile Include="Warnings\CustomWarning.cs" />
+    <Compile Include="Warnings\WarningEngine.cs" />
     <EmbeddedResource Include="Controls\ConnectionControl.ar.resx">
       <DependentUpon>ConnectionControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -526,6 +557,7 @@
       <DependentUpon>Strings.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\MissionPlanner.CurrentState.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -540,6 +572,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="ExtLibs\AltitudeAngelWings\AltitudeAngelWings.csproj">
+      <Project>{098f542c-7c70-4b9c-b2e2-ac5dc5e0294b}</Project>
+      <Name>AltitudeAngelWings</Name>
+    </ProjectReference>
     <ProjectReference Include="ExtLibs\Arduino\Arduino.csproj">
       <Project>{ec0f2b60-cc39-4990-801f-c5db4b570600}</Project>
       <Name>Arduino</Name>
@@ -556,6 +592,10 @@
       <Project>{b1859387-cd34-4138-b3ed-d78c60f3f825}</Project>
       <Name>MissionPlanner.Controls</Name>
     </ProjectReference>
+    <ProjectReference Include="ExtLibs\GeoUtility\GeoUtility.csproj">
+      <Project>{7f7994ce-823f-4a04-bbea-d0a3808ff56d}</Project>
+      <Name>GeoUtility</Name>
+    </ProjectReference>
     <ProjectReference Include="ExtLibs\GMap.NET.Core\GMap.NET.Core.csproj">
       <Project>{d0c39d9d-bed0-418b-9a5e-713176caf40c}</Project>
       <Name>GMap.NET.Core</Name>
@@ -571,7 +611,6 @@
     <ProjectReference Include="ExtLibs\Mavlink\MAVLink.csproj">
       <Project>{bfbea668-811b-4a2c-88c8-4ace809240ea}</Project>
       <Name>MAVLink</Name>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
     </ProjectReference>
     <ProjectReference Include="ExtLibs\PathProgram\PathProgram.csproj">
       <Project>{1a34a984-73a8-4919-bb04-36d8207fd436}</Project>
@@ -585,9 +624,17 @@
       <Project>{65473257-e70f-410b-9269-d0c0f771ea87}</Project>
       <Name>SharpAdbClient</Name>
     </ProjectReference>
+    <ProjectReference Include="ExtLibs\SharpKml\SharpKml.csproj">
+      <Project>{53f12a60-e9cc-44bc-8366-1ae3ab2b547d}</Project>
+      <Name>SharpKml</Name>
+    </ProjectReference>
     <ProjectReference Include="ExtLibs\solo\solo.csproj">
       <Project>{cf402948-a3f4-4962-8a57-e40b46759d25}</Project>
       <Name>solo</Name>
+    </ProjectReference>
+    <ProjectReference Include="ExtLibs\tlogThumbnailHandler\tlogThumbnailHandler.csproj">
+      <Project>{aba78b2e-77c3-4377-8568-9542ac227971}</Project>
+      <Name>tlogThumbnailHandler</Name>
     </ProjectReference>
     <ProjectReference Include="ExtLibs\Utilities\MissionPlanner.Utilities.csproj">
       <Project>{8cc16be0-34a4-4683-8d8e-f8f52e19bd7d}</Project>
@@ -812,5 +859,6 @@
     <Content Include="Resources\x8.png" />
     <Content Include="Resources\y6.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

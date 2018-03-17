@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,7 +25,7 @@ using System.Reflection;
 
 namespace AUV_GCS.GCSViews
 {
-    public partial class MainMap : MyUserControl
+    public partial class MainMap : MyUserControl, IDeactivate, IActivate
     {
         private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         public static myGMAP mymap;
@@ -33,8 +34,10 @@ namespace AUV_GCS.GCSViews
         MissionPlanner.Controls.Icon.Polygon polyicon = new MissionPlanner.Controls.Icon.Polygon();
         bool polygongridmode;
         bool sethome;
+        bool isonline = true;
         bool splinemode;
         public bool quickadd;
+        public bool autopan { get; set; }
         int selectedrow;
         private Dictionary<string, string[]> cmdParamNames = new Dictionary<string, string[]>();
 
@@ -49,8 +52,8 @@ namespace AUV_GCS.GCSViews
         public AUV_GCS.FunctionTabControl.WayPointData WayPointData;
         PointLatLng MouseDownStart;
         PointLatLngAlt mouseposdisplay = new PointLatLngAlt(0, 0);
+        public static MainMap instance;
 
-        
         //layout
         public static GMapOverlay objectsoverlay; // where the markers a drawn
 
@@ -74,11 +77,15 @@ namespace AUV_GCS.GCSViews
         internal PointLatLng MouseDownEnd;
 
         //layers
+        GMapOverlay top; // not currently used
         GMapOverlay drawnpolygonsoverlay;
         GMapOverlay kmlpolygonsoverlay;
         GMapOverlay geofenceoverlay;
         static GMapOverlay rallypointoverlay;
         public static GMapOverlay polygonsoverlay; // where the track is drawn
+        public static GMapOverlay routesoverlay; // static so can update from gcs
+        public static GMapOverlay poioverlay = new GMapOverlay("POI"); // poi layer
+        public static GMapOverlay airportsoverlay;
 
         public MainMap()
         {
@@ -112,7 +119,44 @@ namespace AUV_GCS.GCSViews
             /**=gMapControl1.Position = new PointLatLng(Settings.Instance.GetDouble("maplast_lat"),
                         Settings.Instance.GetDouble("maplast_lng"));*/
 
-            updateCMDParams();
+            
+            gMapControl1.RoutesEnabled = true;
+            // draw this layer first
+            kmlpolygonsoverlay = new GMapOverlay("kmlpolygons");
+            gMapControl1.Overlays.Add(kmlpolygonsoverlay);
+
+            geofenceoverlay = new GMapOverlay("geofence");
+            gMapControl1.Overlays.Add(geofenceoverlay);
+
+            rallypointoverlay = new GMapOverlay("rallypoints");
+            gMapControl1.Overlays.Add(rallypointoverlay);
+
+            routesoverlay = new GMapOverlay("routes");
+            gMapControl1.Overlays.Add(routesoverlay);
+
+            polygonsoverlay = new GMapOverlay("polygons");
+            gMapControl1.Overlays.Add(polygonsoverlay);
+
+            airportsoverlay = new GMapOverlay("airports");
+            gMapControl1.Overlays.Add(airportsoverlay);
+
+            objectsoverlay = new GMapOverlay("objects");
+            gMapControl1.Overlays.Add(objectsoverlay);
+
+            drawnpolygonsoverlay = new GMapOverlay("drawnpolygons");
+            gMapControl1.Overlays.Add(drawnpolygonsoverlay);
+
+            gMapControl1.Overlays.Add(poioverlay);
+
+            top = new GMapOverlay("top");
+
+            // set current marker
+            currentMarker = new GMarkerGoogle(gMapControl1.Position, GMarkerGoogleType.red);
+            //top.Markers.Add(currentMarker);
+
+            // map center
+            center = new GMarkerGoogle(gMapControl1.Position, GMarkerGoogleType.none);
+            top.Markers.Add(center);
         }
 
         void gMapControl1_OnCurrentPositionChanged(PointLatLng point)
@@ -417,11 +461,11 @@ namespace AUV_GCS.GCSViews
             mouseposdisplay.Lng = lng;
             mouseposdisplay.Alt = alt;
 
-            //coords1.Lat = mouseposdisplay.Lat;
-            //coords1.Lng = mouseposdisplay.Lng;
+            coords1.Lat = mouseposdisplay.Lat;
+            coords1.Lng = mouseposdisplay.Lng;
             var altdata = MissionPlanner.srtm.getAltitude(mouseposdisplay.Lat, mouseposdisplay.Lng, gMapControl1.Zoom);
-            //coords1.Alt = altdata.alt;
-            //coords1.AltSource = altdata.altsource;
+            coords1.Alt = altdata.alt;
+            coords1.AltSource = altdata.altsource;
 
             try
             {
@@ -1379,6 +1423,41 @@ namespace AUV_GCS.GCSViews
             {
             }
         }
+        private void addpolygonmarker(string tag, double lng, double lat, int alt, Color? color, GMapOverlay overlay)
+        {
+            try
+            {
+                PointLatLng point = new PointLatLng(lat, lng);
+                GMarkerGoogle m = new GMarkerGoogle(point, GMarkerGoogleType.green);
+                m.ToolTipMode = MarkerTooltipMode.Always;
+                m.ToolTipText = tag;
+                m.Tag = tag;
+
+                MissionPlanner.GMapMarkerRect mBorders = new MissionPlanner.GMapMarkerRect(point);
+                {
+                    mBorders.InnerMarker = m;
+                    try
+                    {
+                        mBorders.wprad =
+                            (int)(Settings.Instance.GetFloat("TXT_WPRad") / MissionPlanner.CurrentState.multiplierdist);
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error(ex);
+                    }
+                    if (color.HasValue)
+                    {
+                        mBorders.Color = color.Value;
+                    }
+                }
+
+                overlay.Markers.Add(m);
+                overlay.Markers.Add(mBorders);
+            }
+            catch (Exception)
+            {
+            }
+        }
         public enum altmode
         {
             Relative = MAVLink.MAV_FRAME.GLOBAL_RELATIVE_ALT,
@@ -1771,14 +1850,415 @@ namespace AUV_GCS.GCSViews
         {
             selectedrow = WayPointData.Commands.Rows.Add();  //新增DataGridView 資料列
             DataGridViewTextBoxCell cell;
-            if (WayPointData.Commands.Columns[WayPointData.Lat.Index].HeaderText.Equals(cmdParamNames["WAYPOINT"][2] /*"Lat"*/))
+            if (WayPointData.Commands.Columns[WayPointData.Lat.Index].HeaderText.Equals(cmdParamNames["WAYPOINT"][4] /*"Lat"*/))
             {
                 cell = WayPointData.Commands.Rows[selectedrow].Cells[WayPointData.Lat.Index] as DataGridViewTextBoxCell;
-                cell.Value = (123.1111).ToString();   //將來源清單Lat資料新增至DataGridView Lat欄位，list[0] 為 home 點所以需加1才會是第一個航點 
+                cell.Value = (23.1111).ToString();   //將來源清單Lat資料新增至DataGridView Lat欄位，list[0] 為 home 點所以需加1才會是第一個航點 
                 cell.DataGridView.EndEdit();
             }
         }
 
+        private void TXT_homelat_TextChanged(object sender, EventArgs e)
+        {
+            sethome = false;
+            try
+            {
+                MainForm.comPort.MAV.cs.HomeLocation.Lat = double.Parse(TXT_homelat.Text);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+            writeKML();
+        }
+
+        private void TXT_homelng_TextChanged(object sender, EventArgs e)
+        {
+
+            sethome = false;
+            try
+            {
+                MainForm.comPort.MAV.cs.HomeLocation.Lng = double.Parse(TXT_homelng.Text);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+            writeKML();
+        }
+
+        private void TXT_homealt_TextChanged(object sender, EventArgs e)
+        {
+            sethome = false;
+            try
+            {
+                MainForm.comPort.MAV.cs.HomeLocation.Alt = double.Parse(TXT_homealt.Text);
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+            writeKML();
+        }
+
+        private void label4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if(MainForm.comPort.MAV.cs.lat != 0)
+            {
+                TXT_homealt.Text = (MainForm.comPort.MAV.cs.altasl).ToString("0");
+                TXT_homelat.Text = MainForm.comPort.MAV.cs.lat.ToString();
+                TXT_homelng.Text = MainForm.comPort.MAV.cs.lng.ToString();
+            }
+            else
+            {
+                CustomMessageBox.Show(
+                    "If you're at the field, connect to your APM and wait for GPS lock. Then click 'Home Location' link to set home to your location");
+            }
+        }
+        public void updateHome()
+        {
+            quickadd = true;
+            if (InvokeRequired)
+            {
+                Invoke((MethodInvoker)delegate { updateHomeText(); });
+            }
+            else
+            {
+                updateHomeText();
+            }
+            quickadd = false;
+        }
+
+        private void updateHomeText()
+        {
+            // set home location
+            if (MainForm.comPort.MAV.cs.HomeLocation.Lat != 0 && MainForm.comPort.MAV.cs.HomeLocation.Lng != 0)
+            {
+                TXT_homelat.Text = MainForm.comPort.MAV.cs.HomeLocation.Lat.ToString();
+
+                TXT_homelng.Text = MainForm.comPort.MAV.cs.HomeLocation.Lng.ToString();
+
+                TXT_homealt.Text = MainForm.comPort.MAV.cs.HomeLocation.Alt.ToString();
+
+                writeKML();
+            }
+        }
+        private void config(bool write)
+        {
+            if (write)
+            {
+                Settings.Instance["TXT_homelat"] = TXT_homelat.Text;
+                Settings.Instance["TXT_homelng"] = TXT_homelng.Text;
+                Settings.Instance["TXT_homealt"] = TXT_homealt.Text;
+
+
+                Settings.Instance["TXT_WPRad"] = WayPointData.TXT_WPRad.Text;
+
+                Settings.Instance["TXT_loiterrad"] = WayPointData.TXT_loiterrad.Text;
+
+                Settings.Instance["TXT_DefaultAlt"] = WayPointData.TXT_DefaultAlt.Text;
+
+                Settings.Instance["CMB_altmode"] = WayPointData.Text;
+
+                //Settings.Instance["fpminaltwarning"] = WayPointData.TXT_altwarn.Text;
+
+                Settings.Instance["fpcoordmouse"] = coords1.System;
+            }
+            else
+            {
+                foreach (string key in Settings.Instance.Keys)
+                {
+                    switch (key)
+                    {
+                        case "TXT_WPRad":
+                            WayPointData.TXT_WPRad.Text = "" + Settings.Instance[key];
+                            break;
+                        case "TXT_loiterrad":
+                            WayPointData.TXT_loiterrad.Text = "" + Settings.Instance[key];
+                            break;
+                        case "TXT_DefaultAlt":
+                            WayPointData.TXT_DefaultAlt.Text = "" + Settings.Instance[key];
+                            break;
+                        case "CMB_altmode":
+                            //CMB_altmode.Text = "" + Settings.Instance[key];
+                            break;
+                        case "fpminaltwarning":
+                            //TXT_altwarn.Text = "" + Settings.Instance["fpminaltwarning"];
+                            break;
+                        case "fpcoordmouse":
+                            coords1.System = "" + Settings.Instance[key];
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+        public void Deactivate()
+        {
+            config(true);
+            timer1.Stop();
+        }
+        public void Activate()
+        {
+            timer1.Start();
+
+            /*if (MainForm.comPort.BaseStream.IsOpen && MainForm.comPort.MAV.cs.firmware == MainForm.Firmwares.ArduCopter2 &&
+                MainForm.comPort.MAV.cs.version < new Version(3, 3))
+            {
+                CMB_altmode.Visible = false;
+            }
+            else
+            {
+                CMB_altmode.Visible = true;
+            }*/
+
+            //switchDockingToolStripMenuItem_Click(null, null);
+
+            updateHome();
+
+            setWPParams();
+
+            updateCMDParams();
+
+            try
+            {
+                int.Parse(WayPointData.TXT_DefaultAlt.Text);
+            }
+            catch
+            {
+                CustomMessageBox.Show("Please fix your default alt value");
+                WayPointData.TXT_DefaultAlt.Text = (50 * MissionPlanner.CurrentState.multiplierdist).ToString("0");
+            }
+        }
+        void setWPParams()
+        {
+            try
+            {
+                log.Info("Loading wp params");
+
+                Dictionary<string, double> param = new Dictionary<string, double>((Dictionary<string, double>)MainForm.comPort.MAV.param);
+
+                if (param.ContainsKey("WP_RADIUS"))
+                {
+                    WayPointData.TXT_WPRad.Text = (((double)param["WP_RADIUS"] * MissionPlanner.CurrentState.multiplierdist)).ToString();
+                }
+                if (param.ContainsKey("WPNAV_RADIUS"))
+                {
+                    WayPointData.Text = (((double)param["WPNAV_RADIUS"] * MissionPlanner.CurrentState.multiplierdist / 100.0)).ToString();
+                }
+
+                log.Info("param WP_RADIUS " + WayPointData.Text);
+
+                try
+                {
+                    WayPointData.TXT_loiterrad.Enabled = false;
+                    if (param.ContainsKey("LOITER_RADIUS"))
+                    {
+                        WayPointData.TXT_loiterrad.Text = (((double)param["LOITER_RADIUS"] * MissionPlanner.CurrentState.multiplierdist)).ToString();
+                        WayPointData.TXT_loiterrad.Enabled = true;
+                    }
+                    else if (param.ContainsKey("WP_LOITER_RAD"))
+                    {
+                        WayPointData.TXT_loiterrad.Text = (((double)param["WP_LOITER_RAD"] * MissionPlanner.CurrentState.multiplierdist)).ToString();
+                        WayPointData.TXT_loiterrad.Enabled = true;
+                    }
+
+                    log.Info("param LOITER_RADIUS " + WayPointData.TXT_loiterrad.Text);
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+        }
+
+        DateTime mapupdate = DateTime.MinValue;
+        /// <summary>
+        /// Draw an mav icon, and update tracker location icon and guided mode wp on FP screen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+                try
+                {
+                    if (isMouseDown || CurentRectMarker != null)
+                        return;
+
+                    routesoverlay.Markers.Clear();
+
+                    if (MainForm.comPort.MAV.cs.TrackerLocation != MainForm.comPort.MAV.cs.HomeLocation &&
+                        MainForm.comPort.MAV.cs.TrackerLocation.Lng != 0)
+                    {
+                        addpolygonmarker("Tracker Home", MainForm.comPort.MAV.cs.TrackerLocation.Lng,
+                            MainForm.comPort.MAV.cs.TrackerLocation.Lat, (int)MainForm.comPort.MAV.cs.TrackerLocation.Alt,
+                            Color.Blue, routesoverlay);
+                    }
+
+                    if (MainForm.comPort.MAV.cs.lat == 0 || MainForm.comPort.MAV.cs.lng == 0)
+                        return;
+
+                    var marker = MissionPlanner.Common.getMAVMarker(MainForm.comPort.MAV);
+
+                    routesoverlay.Markers.Add(marker);
+
+                    if (MainForm.comPort.MAV.cs.mode.ToLower() == "guided" && MainForm.comPort.MAV.GuidedMode.x != 0)
+                    {
+                        addpolygonmarker("Guided Mode", MainForm.comPort.MAV.GuidedMode.y, MainForm.comPort.MAV.GuidedMode.x,
+                            (int)MainForm.comPort.MAV.GuidedMode.z, Color.Blue, routesoverlay);
+                    }
+
+                    //autopan
+                    if (autopan)
+                    {
+                        if (route.Points[route.Points.Count - 1].Lat != 0 && (mapupdate.AddSeconds(3) < DateTime.Now))
+                        {
+                            PointLatLng currentloc = new PointLatLng(MainForm.comPort.MAV.cs.lat, MainForm.comPort.MAV.cs.lng);
+                            updateMapPosition(currentloc);
+                            mapupdate = DateTime.Now;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Warn(ex);
+                }
+            
+        }
+        DateTime lastmapposchange = DateTime.MinValue;
+        private void updateMapPosition(PointLatLng currentloc)
+        {
+            BeginInvoke((MethodInvoker)delegate
+            {
+                try
+                {
+                    if (lastmapposchange.Second != DateTime.Now.Second)
+                    {
+                        gMapControl1.Position = currentloc;
+                        lastmapposchange = DateTime.Now;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error(ex);
+                }
+            });
+        }
+
+        private void MainMap_Load(object sender, EventArgs e)
+        {
+
+            quickadd = true;
+
+            Visible = false;
+
+            config(false);
+
+            quickadd = false;
+
+            POI.POIModified += POI_POIModified;
+
+            if (Settings.Instance["WMSserver"] != null)
+                MissionPlanner.Maps.WMSProvider.CustomWMSURL = Settings.Instance["WMSserver"];
+
+            //trackBar1.Value = (int)MainMap.Zoom;
+
+            // check for net and set offline if needed
+            try
+            {
+                IPAddress[] addresslist = Dns.GetHostAddresses("www.google.com");
+            }
+            catch (Exception)
+            {
+                // here if dns failed
+                isonline = false;
+            }
+
+            updateCMDParams();
+
+            //panelMap.Visible = false;
+
+            // mono
+            /*panelMap.Dock = DockStyle.None;
+            panelMap.Dock = DockStyle.Fill;
+            panelMap_Resize(null, null);*/
+
+            //set home
+            try
+            {
+                if (TXT_homelat.Text != "")
+                {
+                    gMapControl1.Position = new PointLatLng(double.Parse(TXT_homelat.Text), double.Parse(TXT_homelng.Text));
+                    gMapControl1.Zoom = 16;
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
+
+            //panelMap.Refresh();
+            
+           // panelMap.Visible = true;
+
+            writeKML();
+
+            // switch the action and wp table
+            if (Settings.Instance["FP_docking"] == "Bottom")
+            {
+                //switchDockingToolStripMenuItem_Click(null, null);
+            }
+
+            Visible = true;
+
+            timer1.Start();
+        }
+        void POI_POIModified(object sender, EventArgs e)
+        {
+            POI.UpdateOverlay(poioverlay);
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+            if (CurentRectMarker == null && CurrentRallyPt == null && groupmarkers.Count == 0)
+            {
+                //deleteWPToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+               // deleteWPToolStripMenuItem.Enabled = true;
+            }
+
+            isMouseClickOffMenu = false; // Just incase
+        }
+
+        private void contextMenuStrip1_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+        {
+            if (e.CloseReason.ToString() == "AppClicked" || e.CloseReason.ToString() == "AppFocusChange")
+                isMouseClickOffMenu = true;
+        }
+        public void redrawPolygonSurvey(List<PointLatLngAlt> list)
+        {
+            drawnpolygon.Points.Clear();
+            drawnpolygonsoverlay.Clear();
+
+            int tag = 0;
+            list.ForEach(x =>
+            {
+                tag++;
+                drawnpolygon.Points.Add(x);
+                addpolygonmarkergrid(tag.ToString(), x.Lng, x.Lat, 0);
+            });
+
+            drawnpolygonsoverlay.Polygons.Add(drawnpolygon);
+            gMapControl1.UpdatePolygonLocalPosition(drawnpolygon);
+            gMapControl1.Invalidate();
+        }
     }
     
 }
